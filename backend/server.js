@@ -2,8 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { db } from './firebaseAdmin.js';
+import postRoutes from './postRoutes.js';
 import authRoutes from './authRoutes.js';
 import subscriptionRoutes from './subscriptionRoutes.js';
+
 
 dotenv.config();
 
@@ -43,6 +45,8 @@ app.get('/api/firebase-test', async (req, res) => {
     });
   }
 });
+
+app.use('/api/posts', postRoutes);
 
 //connect the authentication routes
 app.use('/api/auth', authRoutes);

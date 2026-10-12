@@ -1,43 +1,103 @@
 import { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import './Post.css';
 
 function Post() {
+  const { currentUser, token } = useAuth();
+
   const [postType, setPostType] = useState('Question');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [abstractText, setAbstractText] = useState('');
   const [articleText, setArticleText] = useState('');
   const [tags, setTags] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  function handlePost(event) {
+  async function handlePost(event) {
     event.preventDefault();
 
     if (title.trim() === '') {
       alert('Please enter a title.');
+      return;
     }
-    else if (tags.trim() === '') {
+
+    if (tags.trim() === '') {
       alert('Please enter at least one tag.');
+      return;
     }
-    else if (tags.split(',').filter(tag => tag.trim() !== '').length > 3) {
+
+    const tagList = tags
+      .split(',')
+      .map(tag => tag.trim())
+      .filter(tag => tag !== '');
+
+    if (tagList.length > 3) {
       alert('You can enter a maximum of 3 tags.');
+      return;
     }
-    else if (postType === 'Question' && description.trim() === '') {
+
+    if (postType === 'Question' && description.trim() === '') {
       alert('Please describe your problem.');
+      return;
     }
-    else if (postType === 'Article' && abstractText.trim() === '') {
+
+    if (postType === 'Article' && abstractText.trim() === '') {
       alert('Please enter an abstract.');
+      return;
     }
-    else if (postType === 'Article' && articleText.trim() === '') {
+
+    if (postType === 'Article' && articleText.trim() === '') {
       alert('Please enter the article text.');
+      return;
     }
-    else {
-      alert('Your post has been submitted successfully!');
+
+    if (!currentUser || !token) {
+      alert('Please log in before submitting a post.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch('http://localhost:5000/api/posts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          postType: postType,
+          title: title.trim(),
+          description: description.trim(),
+          abstractText: abstractText.trim(),
+          articleText: articleText.trim(),
+          tags: tagList
+        })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Unable to submit your post.');
+      }
+
+      alert(result.message || 'Your post has been submitted successfully!');
 
       setTitle('');
       setDescription('');
       setAbstractText('');
       setArticleText('');
       setTags('');
+      setPostType('Question');
+
+    } catch (error) {
+      console.error('Post submission error:', error);
+
+      alert(
+        error.message || 'Unable to submit your post. Please try again.'
+      );
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -134,8 +194,12 @@ function Post() {
           />
         </div>
 
-        <button type="submit" className="post-button">
-          Post
+        <button
+          type="submit"
+          className="post-button"
+          disabled={loading}
+        >
+          {loading ? 'Submitting...' : 'Post'}
         </button>
 
       </form>
