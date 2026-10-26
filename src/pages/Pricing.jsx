@@ -60,9 +60,7 @@ function Pricing() {
   //upgrade the subscription
   async function handleUpgrade() {
     try {
-      const response = await fetch(
-        'http://localhost:5000/api/subscription/upgrade',
-        {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/subscription/upgrade`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`

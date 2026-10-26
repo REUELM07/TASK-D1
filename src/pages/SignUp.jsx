@@ -48,7 +48,7 @@ function SignUp() {
       const cleanEmail = email.toLowerCase().trim();
 
       //send registration details to the backend
-      const response = await fetch('http://localhost:5000/api/auth/register', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
