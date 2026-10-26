@@ -42,18 +42,14 @@ function PaymentModal({ onClose, onUpgrade }) {
 
         <h2>Upgrade to Paid</h2>
         <p>Subscription: ₹199/month</p>
-
-        <p className="demo-notice">
-          Demonstration only. No real payment will be processed.
-          Do not enter real card details.
-        </p>
-
+    
         <form onSubmit={handleSubmit}>
           <label>Cardholder Name</label>
           <input
             value={name}
             onChange={(event) => setName(event.target.value)}
             required
+            placeholder='Reuel Menpara'
           />
 
           <label>Demo Card Number</label>
@@ -63,7 +59,7 @@ function PaymentModal({ onClose, onUpgrade }) {
               setCardNumber(event.target.value.replace(/\D/g, '').slice(0, 16))
             }
             inputMode="numeric"
-            placeholder="1234567890123456"
+            placeholder="Enter your 16 digit cardnumber"
             required
           />
 
@@ -71,7 +67,7 @@ function PaymentModal({ onClose, onUpgrade }) {
           <input
             value={expiry}
             onChange={(event) => setExpiry(event.target.value)}
-            placeholder="12/30"
+            placeholder="11/11"
             required
           />
 
@@ -82,6 +78,7 @@ function PaymentModal({ onClose, onUpgrade }) {
             onChange={(event) =>
               setCvv(event.target.value.replace(/\D/g, '').slice(0, 4))
             }
+            placeholder="123"
             inputMode="numeric"
             required
           />

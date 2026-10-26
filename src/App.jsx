@@ -17,6 +17,7 @@ import CursorFollower from './components/CursorFollower';
 
 import Pricing from './pages/Pricing';
 
+
 function Home() {
   return (
     <>
